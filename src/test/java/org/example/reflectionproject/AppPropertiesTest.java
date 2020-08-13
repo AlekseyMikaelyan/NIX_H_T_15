@@ -1,5 +1,6 @@
 package org.example.reflectionproject;
 
+import org.example.reflectionproject.util.WorkWithProperties;
 import org.example.reflectionproject.util.annotations.PropertyKey;
 import org.junit.Assert;
 import org.junit.Before;
@@ -13,87 +14,26 @@ import java.util.Properties;
 
 public class AppPropertiesTest {
 
-    @PropertyKey("name")
+    @PropertyKey("userName")
     public String name;
 
     String lastName;
 
-    @PropertyKey("age")
-    public int age;
+    @PropertyKey("id")
+    public int id;
+
+    @PropertyKey("userName")
+    public String secondName = "Alex";
 
     AppPropertiesTest appPropertiesTest;
-    WorkWithPropertiesTest workWithPropertiesTest;
-
-    static class WorkWithPropertiesTest {
-
-        public void initializerOfFields(Object object) throws IllegalAccessException {
-
-            Class<?> objectClass = object.getClass();
-            for (Field field : objectClass.getFields()) {
-                if (field.isAnnotationPresent(PropertyKey.class)) {
-                    PropertyKey propertyKey = field.getAnnotation(PropertyKey.class);
-                    if (isPropertyPresent(propertyKey.value())) {
-                        field.set(object, getProperty(propertyKey.value()));
-                    }
-                }
-            }
-        }
-
-        public Boolean isPropertyPresent(String key) {
-
-            try (InputStream is = new FileInputStream("test.properties")) {
-                Properties properties = new Properties();
-                properties.load(is);
-
-                return properties.containsKey(key);
-
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            return null;
-        }
-
-        public Object getProperty(String key) {
-
-            try (InputStream is = new FileInputStream("test.properties")) {
-                Properties properties = new Properties();
-                properties.load(is);
-
-                String value = properties.getProperty(key);
-
-                if (isNumber(value)) {
-                    return Integer.parseInt(value);
-                } else {
-                    return value;
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
-            return null;
-        }
-
-        public boolean isNumber(String value) {
-
-            if (value == null || value.isEmpty()) {
-                return false;
-            }
-            for (int i = 0; i < value.length(); i++) {
-                if (!Character.isDigit(value.charAt(i))) {
-                    return false;
-                }
-            }
-
-            return true;
-        }
-    }
+    WorkWithProperties workWithProperties;
 
     @Before
     public void createNewTestObjects() {
         appPropertiesTest = new AppPropertiesTest();
-        workWithPropertiesTest = new WorkWithPropertiesTest();
+         workWithProperties = new WorkWithProperties();
         try {
-            workWithPropertiesTest.initializerOfFields(appPropertiesTest);
+            workWithProperties.initializerOfFields(appPropertiesTest);
         } catch (IllegalAccessException e) {
             e.printStackTrace();
         }
@@ -102,17 +42,24 @@ public class AppPropertiesTest {
     @Test
     public void methodShouldReturnCorrectAge() {
 
-        Assert.assertEquals(30, appPropertiesTest.age);
+        Assert.assertEquals(245, appPropertiesTest.id);
     }
 
     @Test
     public void methodShouldReturnCorrectName() {
 
-        Assert.assertEquals("Alex", appPropertiesTest.name);
+        Assert.assertEquals("John", appPropertiesTest.name);
     }
 
     @Test
     public void methodShouldReturnNull() {
+
         Assert.assertNull(appPropertiesTest.lastName);
+    }
+
+    @Test
+    public void methodShouldReturnFalse() {
+
+        Assert.assertNotEquals("Alex", appPropertiesTest.secondName);
     }
 }
