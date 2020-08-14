@@ -10,6 +10,9 @@ public class AppProperties {
     @PropertyKey("userName")
     public String name;
 
+    @PropertyKey("salary")
+    public double salary;
+
     public String lastName;
 
     public long bankAccount;

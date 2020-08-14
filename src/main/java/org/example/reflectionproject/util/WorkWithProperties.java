@@ -17,7 +17,30 @@ public class WorkWithProperties {
             if(field.isAnnotationPresent(PropertyKey.class)) {
                 PropertyKey propertyKey = field.getAnnotation(PropertyKey.class);
                 if(isPropertyPresent(propertyKey.value())) {
-                    field.set(object, getProperty(propertyKey.value()));
+                    if(field.getType() == int.class) {
+                        field.setInt(object, Integer.parseInt(getProperty(propertyKey.value())));
+                    }
+                    if(field.getType() == double.class) {
+                        field.setDouble(object, Double.parseDouble(getProperty(propertyKey.value())));
+                    }
+                    if(field.getType() == boolean.class) {
+                        field.setBoolean(object, Boolean.parseBoolean(getProperty(propertyKey.value())));
+                    }
+                    if(field.getType() == byte.class) {
+                        field.setByte(object, Byte.parseByte(getProperty(propertyKey.value())));
+                    }
+                    if(field.getType() == short.class) {
+                        field.setShort(object, Short.parseShort(getProperty(propertyKey.value())));
+                    }
+                    if(field.getType() == float.class) {
+                        field.setFloat(object, Float.parseFloat(getProperty(propertyKey.value())));
+                    }
+                    if(field.getType() == long.class) {
+                        field.setLong(object, Long.parseLong(getProperty(propertyKey.value())));
+                    }
+                    if(field.getType() == String.class) {
+                        field.set(object, getProperty(propertyKey.value()));
+                    }
                 }
             }
         }
@@ -37,38 +60,20 @@ public class WorkWithProperties {
         return null;
     }
 
-    public Object getProperty(String key) {
+
+    public static String getProperty(String key) {
+
+        String stringValue = "";
 
         try(InputStream inputStream = new FileInputStream("application.properties")) {
             Properties properties = new Properties();
             properties.load(inputStream);
 
-            String value = properties.getProperty(key);
+            stringValue = properties.getProperty(key);
 
-            if(isNumber(value)) {
-                return Integer.parseInt(value);
-            } else {
-                return value;
-            }
         } catch (IOException e) {
             e.printStackTrace();
         }
-
-        return null;
+        return stringValue;
     }
-
-    public boolean isNumber(String value) {
-
-        if(value == null || value.isEmpty()) {
-            return false;
-        }
-        for(int i = 0; i < value.length(); i++) {
-            if(!Character.isDigit(value.charAt(i))) {
-                return false;
-            }
-        }
-
-        return true;
-    }
-
 }

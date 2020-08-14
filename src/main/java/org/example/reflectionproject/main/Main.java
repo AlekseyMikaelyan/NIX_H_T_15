@@ -9,7 +9,7 @@ public class Main {
         WorkWithProperties workWithProperties = new WorkWithProperties();
         try {
             workWithProperties.initializerOfFields(appProperties);
-            System.out.println("Id : " + appProperties.id + "\nName : " + appProperties.name);
+            System.out.println("Id : " + appProperties.id + "\nName : " + appProperties.name + "\nSalary : " + appProperties.salary);
         } catch (IllegalAccessException e) {
             e.printStackTrace();
         }
